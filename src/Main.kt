@@ -43,6 +43,11 @@ fun main(args: Array<String>) {
 
     }
 
+    val allVehicles = arrayListOf<Vehicle>()
+    for (i in 0 until inputData.vehicles) {
+        allVehicles.add(Vehicle())
+    }
+
     inputData.arrayOfRides.sortBy { it.latestFinish }
     val finishes = inputData.arrayOfRides.groupBy { it.latestFinish }
 

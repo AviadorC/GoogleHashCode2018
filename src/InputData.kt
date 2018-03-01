@@ -17,3 +17,8 @@ class Ride {
 }
 
 data class Point(val row:Int = 0, val column: Int = 0)
+
+class Vehicle {
+    var currentPoint = Point(0,0)
+    var rides = arrayListOf<Int>()
+}
