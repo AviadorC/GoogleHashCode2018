@@ -1,6 +1,7 @@
 
 import java.io.File
 import java.util.*
+import kotlin.collections.ArrayList
 
 fun main(args: Array<String>) {
     println("Hello World!")
@@ -12,6 +13,7 @@ fun main(args: Array<String>) {
     val inputData = InputData()
 
     var firstLine = true
+    var riderCounter = 0
     while (input.hasNextLine()) {
         val line = input.nextLine()
         val elements = line.split(" ").map { it.toInt() }
@@ -29,6 +31,7 @@ fun main(args: Array<String>) {
         }
 
         val newRide = Ride()
+        newRide.id = riderCounter
         newRide.from = Point(elements[0], elements[1])
         newRide.to = Point(elements[2], elements[3])
         newRide.earliestStart = elements[4]
@@ -36,6 +39,31 @@ fun main(args: Array<String>) {
 
         inputData.arrayOfRides.add(newRide)
 
+        riderCounter += 1
+
+    }
+
+    inputData.arrayOfRides.sortBy { it.latestFinish }
+    val finishes = inputData.arrayOfRides.groupBy { it.latestFinish }
+
+    val ridesByImportance = hashMapOf<Int, ArrayList<Ride>>()
+    for (ride in finishes.keys) {
+        val rides = finishes[ride]
+        var newRides = arrayListOf<Ride>()
+        newRides.addAll(rides!!)
+        newRides.sortBy { it.earliestStart }
+
+        ridesByImportance.put(ride, newRides)
+    }
+
+    val orderedKeys = ridesByImportance.keys.toIntArray()
+    orderedKeys.sort()
+
+    for (i in 0 until inputData.steps) {
+        for (key in orderedKeys) {
+            val rides = ridesByImportance[key]!!
+
+        }
     }
 
     val x = 0

@@ -9,6 +9,7 @@ class InputData {
 }
 
 class Ride {
+    var id : Int = -1
     var from : Point = Point()
     var to : Point = Point()
     var earliestStart : Int = -1
