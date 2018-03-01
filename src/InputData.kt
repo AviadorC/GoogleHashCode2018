@@ -17,7 +17,12 @@ class Ride {
     var rideLength = 0
 }
 
-data class Point(val row:Int = 0, val column: Int = 0)
+class Point(val row:Int = 0, val column: Int = 0) {
+
+    fun equals(other: Point): Boolean {
+        return this.row == other.row && this.column == other.column
+    }
+}
 
 class Vehicle {
     var currentPoint = Point(0,0)
