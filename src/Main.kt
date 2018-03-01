@@ -1,6 +1,6 @@
 
+import com.zetcode.Output
 import java.io.File
-import java.security.cert.PolicyNode
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -32,10 +32,10 @@ fun main(args: Array<String>) {
         ridesByImportance.put(ride, newRides)
     }
 
+    /// WORKS lol
+
     val orderedKeys = ridesByImportance.keys.toIntArray()
     orderedKeys.sort()
-
-
 
     for (i in 0 until inputData.steps) {
         var availableRideFinishes = orderedKeys.filter { it > i }
@@ -44,54 +44,124 @@ fun main(args: Array<String>) {
         for (possibleFinish in availableRideFinishes) {
             val allFinishRoads = ridesByImportance[possibleFinish] ?: continue
 
-            val nonTakenRoads = allFinishRoads.filter { road ->
-                allVehicles.any { it.currentRide!!.id == road.id }
+            val nonOpierdolonaRoads = allFinishRoads.filter { !it.opierdolona }
+
+            val nonTakenRoads = nonOpierdolonaRoads.filter { road ->
+                !allVehicles
+                        .filter { it.currentRide != null }
+                        .any {
+                            it.currentRide!!.id == road.id
+                        }
             }
 
             availableRides.addAll(nonTakenRoads)
         }
 
+
         val stepsToEnd = inputData.steps - i
+
+        // works lol
 
         emptyVehicles(allVehicles)
 
-        val nonBusyVehicles = allVehicles.filter { it.currentRide != null }
+        val nonBusyVehicles = allVehicles.filter { it.currentRide == null }
 
-        var vehicleAvailableRoads : HashMap<Vehicle, ArrayList<VehicleRide>> = hashMapOf()
+        if (!nonBusyVehicles.isEmpty()) {
+            var vehicleAvailableRoads : HashMap<Vehicle, ArrayList<VehicleRide>> = hashMapOf()
 
-        for (vehicle in nonBusyVehicles) {
-            vehicleAvailableRoads.put(vehicle, arrayListOf())
+            for (vehicle in nonBusyVehicles) {
+                vehicleAvailableRoads.put(vehicle, arrayListOf())
 
-            for (road in availableRides) {
-                val toStart = getLength(vehicle.currentPoint, road.from)
-                val fromStartToFinish = getLength(road.from, road.to)
-                val totalLength = toStart + fromStartToFinish
+                for (road in availableRides) {
+                    val toStart = getLength(vehicle.currentPoint, road.from)
+                    val fromStartToFinish = getLength(road.from, road.to)
+                    val totalLength = toStart + fromStartToFinish
 
-                if (totalLength > stepsToEnd) {
+                    if (totalLength > stepsToEnd) {
+                        continue
+                    }
+
+                    vehicleAvailableRoads[vehicle]?.add(VehicleRide(totalLength, road))
+                }
+
+                vehicleAvailableRoads[vehicle]?.sortBy { it.totalLength }
+            }
+
+            /// Optimalizations
+
+            val alreadyTaken = arrayListOf<Ride>()
+
+            for (vehicle in vehicleAvailableRoads) {
+                var mostOptimalRoad: Ride? = null
+                for (road in vehicle.value) {
+                    if (!alreadyTaken.contains(road.ride)) {
+                        mostOptimalRoad = road.ride!!
+                        break
+                    }
+                }
+
+                if (mostOptimalRoad == null) {
                     continue
                 }
 
-                vehicleAvailableRoads[vehicle]?.add(VehicleRide(totalLength, road))
+                alreadyTaken.add(mostOptimalRoad)
+                vehicle.key.currentRide = mostOptimalRoad
             }
-
-            vehicleAvailableRoads[vehicle]?.sortBy { it.totalLength }
-            vehicleAvailableRoads = hashMapOf()
         }
 
-        /// Optimalizations
+        for (vehicle in allVehicles) {
+            val currentRide = vehicle.currentRide ?: continue
+            val onStart = currentRide.from.equals(vehicle.currentPoint)
+            if (onStart && i >= currentRide.earliestStart && !vehicle.wasOnFuckingStart) {
+                vehicle.wasOnFuckingStart = true
+                continue
+            }
 
-
-
+            if (vehicle.wasOnFuckingStart) {
+                moveToPoint(vehicle, currentRide.to)
+            } else {
+                moveToPoint(vehicle, currentRide.from)
+            }
+        }
     }
 
-    val x = 0
+    emptyVehicles(allVehicles)
+
+    val output = Output()
+    for (vehicle in allVehicles) {
+        output.write(vehicle)
+    }
+}
+
+private fun moveToPoint(vehicle:Vehicle, target: Point) {
+    if (vehicle.currentPoint.row < target.row) {
+        vehicle.currentPoint.row += 1
+        return
+    }
+
+    if (vehicle.currentPoint.row > target.row) {
+        vehicle.currentPoint.row -= 1
+        return
+    }
+
+    if (vehicle.currentPoint.column < target.column) {
+        vehicle.currentPoint.column += 1
+        return
+    }
+
+    if (vehicle.currentPoint.column > target.column) {
+        vehicle.currentPoint.column -= 1
+        return
+    }
 }
 
 private fun emptyVehicles(allVehicles : ArrayList<Vehicle>) {
     for (v in allVehicles) {
-        if (v.currentRide != null && v.currentPoint.equals(v.currentRide?.to))
+        if (v.currentRide != null && v.currentPoint.equals(v.currentRide?.to!!)) {
             v.rides.add(v.currentRide!!.id)
-        v.currentRide = null
+            v.currentRide?.opierdolona = true
+            v.currentRide = null
+        }
     }
 }
 

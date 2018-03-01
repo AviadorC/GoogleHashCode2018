@@ -3,11 +3,13 @@ package com.zetcode
 import java.io.File
 import Vehicle
 
-public class output {
+public class Output {
    public val fileName = "result.txt"
     public val myfile = File(fileName)
 
     fun write(vehicle: Vehicle ) {
+        myfile
+
         var text: String = ""
         text += (vehicle.rides.count().toString() + " ")
 
@@ -16,5 +18,6 @@ public class output {
         }
 
         myfile.appendText(text)
+        myfile.appendText("\n")
     }
 }

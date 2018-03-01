@@ -15,6 +15,8 @@ class Ride {
     var earliestStart : Int = -1
     var latestFinish: Int = -1
     var rideLength = 0
+
+    var opierdolona: Boolean = false
 }
 
 data class VehicleRide(
@@ -22,7 +24,7 @@ data class VehicleRide(
     var ride : Ride? = null
 )
 
-class Point(val row:Int = 0, val column: Int = 0) {
+class Point(var row:Int = 0, var column: Int = 0) {
 
     fun equals(other: Point): Boolean {
         return this.row == other.row && this.column == other.column
@@ -31,6 +33,7 @@ class Point(val row:Int = 0, val column: Int = 0) {
 
 class Vehicle {
     var currentRide : Ride? = null
+    var wasOnFuckingStart : Boolean = false
     var currentPoint = Point(0,0)
     var rides = arrayListOf<Int>()
 }
