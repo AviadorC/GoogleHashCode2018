@@ -1,10 +1,10 @@
 class InputData {
-    val rows: Int = 0
-    val columns: Int = 0
-    val vehicles: Int = 0
-    val rides: Int = 0
-    val bonus: Int = 0
-    val steps: Int = 0
-    val ridesModel = IntArray(6)
-    val arrayOfRides: Array<IntArray> = arrayOf()
+    var rows: Int = 0
+    var columns: Int = 0
+    var vehicles: Int = 0
+    var rides: Int = 0
+    var bonus: Int = 0
+    var steps: Int = 0
+    var ridesModel = IntArray(6)
+    var arrayOfRides: Array<IntArray> = arrayOf()
 }
