@@ -5,14 +5,15 @@ import java.util.*
 
 fun main(args: Array<String>) {
     println("Hello World!")
-    val file = File("hellofile.txt")
+
+
+    val file = File("a_example.in")
     val input = Scanner(file)
-    if (input.hasNextLine()) {
-        val answer = input.nextLine()
-        println(answer)
+    while (input.hasNextLine()) {
+        val line = input.nextLine()
+        val elements = line.split(" ").map { it.toInt() }
+        val x = 1;
     }
 
-    val writer = file.printWriter().use {
-        out -> out.println("Written")
-    }
+
 }
