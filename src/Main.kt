@@ -1,7 +1,9 @@
 
 import java.io.File
+import java.security.cert.PolicyNode
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 fun main(args: Array<String>) {
     println("Hello World!")
@@ -33,11 +35,64 @@ fun main(args: Array<String>) {
     val orderedKeys = ridesByImportance.keys.toIntArray()
     orderedKeys.sort()
 
+
+
     for (i in 0 until inputData.steps) {
+        var availableRideFinishes = orderedKeys.filter { it > i }
+        val availableRides = arrayListOf<Ride>()
+
+        for (possibleFinish in availableRideFinishes) {
+            val allFinishRoads = ridesByImportance[possibleFinish] ?: continue
+
+            val nonTakenRoads = allFinishRoads.filter { road ->
+                allVehicles.any { it.currentRide!!.id == road.id }
+            }
+
+            availableRides.addAll(nonTakenRoads)
+        }
+
+        val stepsToEnd = inputData.steps - i
+
+        emptyVehicles(allVehicles)
+
+        val nonBusyVehicles = allVehicles.filter { it.currentRide != null }
+
+        var vehicleAvailableRoads : HashMap<Vehicle, ArrayList<VehicleRide>> = hashMapOf()
+
+        for (vehicle in nonBusyVehicles) {
+            vehicleAvailableRoads.put(vehicle, arrayListOf())
+
+            for (road in availableRides) {
+                val toStart = getLength(vehicle.currentPoint, road.from)
+                val fromStartToFinish = getLength(road.from, road.to)
+                val totalLength = toStart + fromStartToFinish
+
+                if (totalLength > stepsToEnd) {
+                    continue
+                }
+
+                vehicleAvailableRoads[vehicle]?.add(VehicleRide(totalLength, road))
+            }
+
+            vehicleAvailableRoads[vehicle]?.sortBy { it.totalLength }
+            vehicleAvailableRoads = hashMapOf()
+        }
+
+        /// Optimalizations
+
+
 
     }
 
     val x = 0
+}
+
+private fun emptyVehicles(allVehicles : ArrayList<Vehicle>) {
+    for (v in allVehicles) {
+        if (v.currentRide != null && v.currentPoint.equals(v.currentRide?.to))
+            v.rides.add(v.currentRide!!.id)
+        v.currentRide = null
+    }
 }
 
 private fun parseData(input: Scanner) : InputData {
@@ -67,7 +122,7 @@ private fun parseData(input: Scanner) : InputData {
         newRide.to = Point(elements[2], elements[3])
         newRide.earliestStart = elements[4]
         newRide.latestFinish = elements[5]
-        newRide.rideLength = Math.abs(newRide.to.row - newRide.from.row) + Math.abs(newRide.to.column - newRide.from.column)
+        newRide.rideLength = getLength(newRide.from, newRide.to)
 
         inputData.arrayOfRides.add(newRide)
 
@@ -76,4 +131,8 @@ private fun parseData(input: Scanner) : InputData {
     }
 
     return inputData
+}
+
+private fun getLength(from: Point, to: Point) : Int {
+    return Math.abs(from.row - to.row) + Math.abs(from.column - to.column)
 }

@@ -17,6 +17,11 @@ class Ride {
     var rideLength = 0
 }
 
+data class VehicleRide(
+    var totalLength : Int = 0,
+    var ride : Ride? = null
+)
+
 class Point(val row:Int = 0, val column: Int = 0) {
 
     fun equals(other: Point): Boolean {
@@ -25,6 +30,7 @@ class Point(val row:Int = 0, val column: Int = 0) {
 }
 
 class Vehicle {
+    var currentRide : Ride? = null
     var currentPoint = Point(0,0)
     var rides = arrayListOf<Int>()
 }
