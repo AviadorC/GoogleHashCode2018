@@ -14,6 +14,7 @@ class Ride {
     var to : Point = Point()
     var earliestStart : Int = -1
     var latestFinish: Int = -1
+    var rideLength = 0
 }
 
 data class Point(val row:Int = 0, val column: Int = 0)

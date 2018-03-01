@@ -10,6 +10,37 @@ fun main(args: Array<String>) {
     val file = File("a_example.in")
     val input = Scanner(file)
 
+    val inputData = parseData(input)
+
+    val allVehicles = arrayListOf<Vehicle>()
+    for (i in 0 until inputData.vehicles) {
+        allVehicles.add(Vehicle())
+    }
+
+    inputData.arrayOfRides.sortBy { it.latestFinish }
+    val finishes = inputData.arrayOfRides.groupBy { it.latestFinish }
+
+    val ridesByImportance = hashMapOf<Int, ArrayList<Ride>>()
+    for (ride in finishes.keys) {
+        val rides = finishes[ride]
+        var newRides = arrayListOf<Ride>()
+        newRides.addAll(rides!!)
+        newRides.sortBy { it.earliestStart }
+
+        ridesByImportance.put(ride, newRides)
+    }
+
+    val orderedKeys = ridesByImportance.keys.toIntArray()
+    orderedKeys.sort()
+
+    for (i in 0 until inputData.steps) {
+
+    }
+
+    val x = 0
+}
+
+private fun parseData(input: Scanner) : InputData {
     val inputData = InputData()
 
     var firstLine = true
@@ -36,6 +67,7 @@ fun main(args: Array<String>) {
         newRide.to = Point(elements[2], elements[3])
         newRide.earliestStart = elements[4]
         newRide.latestFinish = elements[5]
+        newRide.rideLength = Math.abs(newRide.to.row - newRide.from.row) + Math.abs(newRide.to.column - newRide.from.column)
 
         inputData.arrayOfRides.add(newRide)
 
@@ -43,33 +75,5 @@ fun main(args: Array<String>) {
 
     }
 
-    val allVehicles = arrayListOf<Vehicle>()
-    for (i in 0 until inputData.vehicles) {
-        allVehicles.add(Vehicle())
-    }
-
-    inputData.arrayOfRides.sortBy { it.latestFinish }
-    val finishes = inputData.arrayOfRides.groupBy { it.latestFinish }
-
-    val ridesByImportance = hashMapOf<Int, ArrayList<Ride>>()
-    for (ride in finishes.keys) {
-        val rides = finishes[ride]
-        var newRides = arrayListOf<Ride>()
-        newRides.addAll(rides!!)
-        newRides.sortBy { it.earliestStart }
-
-        ridesByImportance.put(ride, newRides)
-    }
-
-    val orderedKeys = ridesByImportance.keys.toIntArray()
-    orderedKeys.sort()
-
-    for (i in 0 until inputData.steps) {
-        for (key in orderedKeys) {
-            val rides = ridesByImportance[key]!!
-
-        }
-    }
-
-    val x = 0
+    return inputData
 }
