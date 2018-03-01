@@ -5,4 +5,6 @@ class InputData {
     val rides: Int = 0
     val bonus: Int = 0
     val steps: Int = 0
+    val ridesModel = IntArray(6)
+    val arrayOfRides: Array<IntArray> = arrayOf()
 }
