@@ -3,18 +3,6 @@ package com.zetcode
 import java.io.File
 import Vehicle
 
-fun main(args: Array<String>) {
-
-    val fileName = "src/resources/myfile3.txt"
-    val myfile = File(fileName)
-
-    val content = "Today snow is falling."
-
-    myfile.writeText(content)
-
-    println("Writed to file")
-}
-
 public class output {
    public val fileName = "result.txt"
     public val myfile = File(fileName)
