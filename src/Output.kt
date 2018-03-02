@@ -3,21 +3,21 @@ package com.zetcode
 import java.io.File
 import Vehicle
 
-public class Output {
-   public val fileName = "result.txt"
-    public val myfile = File(fileName)
+class Output {
+    val fileName = "result.txt"
+    val myfile = File(fileName)
 
     fun write(vehicle: Vehicle ) {
         myfile
 
-        var text: String = ""
-        text += (vehicle.rides.count().toString() + " ")
+        var text = StringBuilder()
+        text.append(vehicle.rides.count().toString() + " ")
 
         for (item: Int in vehicle.rides) {
-            text += (item.toString() + " ")
+            text.append(item.toString() + " ")
         }
 
-        myfile.appendText(text)
+        myfile.appendText(text.toString())
         myfile.appendText("\n")
     }
 }

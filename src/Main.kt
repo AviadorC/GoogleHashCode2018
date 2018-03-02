@@ -9,7 +9,7 @@ fun main(args: Array<String>) {
     println("Hello World!")
 
 
-    val file = File("a_example.in")
+    val file = File("e_high_bonus.in")
     val input = Scanner(file)
 
     val inputData = parseData(input)
@@ -38,6 +38,7 @@ fun main(args: Array<String>) {
     orderedKeys.sort()
 
     for (i in 0 until inputData.steps) {
+        println(i)
         var availableRideFinishes = orderedKeys.filter { it > i }
         val availableRides = arrayListOf<Ride>()
 
